@@ -1,0 +1,36 @@
+{% extends "suplementos/design.html" %}
+
+{% load django_bootstrap5 %}
+
+{% block body %}
+
+{% bootstrap_javascript %}
+{% bootstrap_css %}
+
+<nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
+    <div class="container-fluid">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="navbar-brand" aria-disabled="true" style="color:white">Suplementos de la marca: {{marca.nombre}}</a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'index' %}"><button type="button" class="btn btn-primary">Volver</button></a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div class="container-fluid">
+    <div class="grid text-center" style="margin-top:15px">
+        <div class="row">
+            {% for suplemento in suplementos %}
+            <div class="col">
+                <img src={{suplemento.imagen.url}} style="height:160px;width:160px;">
+                    <p>{{suplemento.marca.nombre}} {{suplemento.nombre}}, {{suplemento.size}} | {{suplemento.marca.nombre}} | ${{suplemento.precio}}</p>
+                    <a href="{% url 'suplemento' suplemento.id %}">{% bootstrap_button type="button" class="btn btn-primary" content="Administrar" %}</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock  %}

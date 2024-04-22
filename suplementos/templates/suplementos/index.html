@@ -1,0 +1,161 @@
+{% extends "suplementos/design.html" %}
+
+{% load django_bootstrap5 %}
+
+{% block body %}
+
+{% bootstrap_javascript %}
+{% bootstrap_css %}
+
+    <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
+        <div class="container-fluid">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="navbar-brand" aria-disabled="true" style="color:white">Suplementos, Categorias y Marcas</a>
+                </li>
+                <li class="nav-item">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalModificar">Agregar Suplemento</button>
+                </li>
+                <li class="nav-item" style="margin-left: 15px;">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCategoria">Agregar Categoria</button>
+                </li>
+                <li class="nav-item" style="margin-left: 15px;">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalMarca">Agregar Marca</button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container-fluid">
+        <div class="grid text-center" style="margin-top:15px">
+            <div class="row">
+                {% for suplemento in suplementos %}
+                <div class="col">
+                    <img src={{suplemento.imagen.url}} style="height:160px;width:160px;">
+                        <p>{{suplemento.marca.nombre}} {{suplemento.nombre}}, {{suplemento.size}} | {{suplemento.categoria.nombre}} | ${{suplemento.precio}}</p>
+                        <a href="{% url 'suplemento' suplemento.id %}">{% bootstrap_button type="button" class="btn btn-primary" content="Administrar" %}</a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <h2 style="margin-top:40px"> Categorias:</h2>
+        <ul>
+            {% for categoria in categorias %}
+                <li><a href="{% url 'categoria' categoria.id %}">{{categoria.id}}.</a> {{categoria.nombre}} <a href="{% url 'suplementos_categoria' categoria.id %}">-Ir-</a></li>
+            {% endfor %}
+        </ul>
+        <h2 style="margin-top:40px"> Marcas:</h2>
+        <ul>
+            {% for marca in marcas %}
+                <li><a href="{% url 'marca' marca.id %}">{{marca.id}}.</a> {{marca.nombre}} <a href="{% url 'suplementos_marca' marca.id %}">-Ir-</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Modal Agregar Suplemento-->
+    <div class="modal fade" id="modalModificar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="labelAgregarSuplemento">Agregar Suplemento</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'agregar_suplemento' %}" method="post">
+                        {% csrf_token %}
+                        <div class="input-group mb-3">
+                            <label class="input-group-text" for="id_marcaSuplemento">Marca:</label>
+                            <select class="form-select" id="id_marcaSuplemento" name="marcaSuplemento" required>
+                                {% for marca in marcas %}
+                                    <option class="dropdown-item" value={{marca.id}}>{{marca.nombre}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_nombreSuplemento" class="form-label">Nombre</label>
+                            <input type="text" class="form-control" id="id_nombreSuplemento" maxlength="64" name="nombreSuplemento" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_sizeSuplemento" class="form-label" >Tamaño</label>
+                            <input type="text" class="form-control" id="id_sizeSuplemento" maxlength="8" name="sizeSuplemento" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_precioSuplemento" class="form-label" >Precio</label>
+                            <input type="tel" class="form-control" id="id_precioSuplemento" pattern='[0-9]+' name="precioSuplemento" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_descripcionSuplemento" class="form-label">Descripcion</label>
+                            <input type="text" class="form-control" id="id_descripcionSuplemento" maxlength="512" name="descripcionSuplemento">
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_imagenSuplemento" class="form-label">Imagen</label>
+                            <input type="file" class="form-control" id="id_imagenSuplemento" name="imagenSuplemento" required>
+                        </div>
+                        <div class="input-group mb-3">
+                            <label class="input-group-text" for="id_categoriaSuplemento">Categoria:</label>
+                            <select class="form-select" id="id_categoriaSuplemento" name="categoriaSuplemento" required>
+                                {% for categoria in categorias %}
+                                    <option class="dropdown-item" value={{categoria.id}}>{{categoria.nombre}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Agregar</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal Agregar Categoria-->
+    <div class="modal fade" id="modalCategoria" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="labelAgregarCategoria">Agregar Categoria</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'agregar_categoria' %}" method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="id_nombreCategoria" class="form-label">Nombre</label>
+                            <input type="text" class="form-control" id="id_nombreCategoria" maxlength="32" name="nombreCategoria" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Agregar</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Agregar Marca-->
+    <div class="modal fade" id="modalMarca" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="labelAgregarMarca">Agregar Categoria</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'agregar_marca' %}" method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="id_nombreMarca" class="form-label">Nombre</label>
+                            <input type="text" class="form-control" id="id_nombreMarca" maxlength="32" name="nombreMarca" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Agregar</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock  %}

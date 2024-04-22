@@ -1,0 +1,70 @@
+{% extends "suplementos/design.html" %}
+
+{% load django_bootstrap5 %}
+
+{% block body %}
+
+{% bootstrap_javascript %}
+{% bootstrap_css %}
+<div class="container-fluid">
+    <div class="grid text-center">
+        <h1>Categoria: {{categoria.nombre}}, ID: {{categoria.id}}<h1>
+        <div class="row">
+            <div class="col">
+                <h2>Modificar Categoria</h2>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalModificar">Modificar</button>
+                <form action="{% url 'modificar_categoria' categoria.id %}" method="post">
+                    {% csrf_token %}
+                    <div class="modal fade" id="modalModificar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="labelModificarCategoria">Modificar Categoria</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label for="id_nombreCategoria" class="form-label">Nombre</label>
+                                        <input type="text" class="form-control" id="id_nombreCategoria" maxlength="32" name="nombreCategoria" value="{{categoria.nombre}}">
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-primary">Modificar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>  
+            </div>
+            <div class="col">
+                <a href="{% url 'index' %}"><h3>Volver</h3></a>
+            </div>
+            <div class="col">
+                <h2>Eliminar Categoria</h2>
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalEliminar">Eliminar</button>
+                <form action="{% url 'eliminar_categoria' categoria.id %}" method="post">
+                    {% csrf_token %}
+                    <div class="modal fade" id="modalEliminar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Eliminar Categoria</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Esta seguro que quiere eliminar esta categoria?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock  %}
